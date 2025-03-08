@@ -3,8 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\LoginController;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\JobController;
 
 // Home Route
 Route::get('/', function () {
@@ -15,8 +15,6 @@ Route::get('/', function () {
 Route::get('/category', function () {
     return view('category');
 })->name('category');
-
-
 
 Route::get('/testimonial', function () {
     return view('testimonial');
@@ -51,24 +49,26 @@ Route::get('/register', function () {
     return view('auth.register');
 })->name('register');
 
-// Register Recruiter Form
 Route::get('/register/recruiter', function () {
     return view('auth.register-recruiter');
 })->name('register.recruiter');
 
-// Register Candidate Form
+Route::post('/register/recruiter', [RegisterController::class, 'registerRecruiter'])->name('register.recruiter.submit');
+
 Route::get('/register/candidate', function () {
     return view('auth.register-candidate');
 })->name('register.candidate');
 
-// Register Recruiter
-Route::post('/register/recruiter', [RegisterController::class, 'registerRecruiter'])->name('register.recruiter.submit');
-
-// Register Candidate
 Route::post('/register/candidate', [RegisterController::class, 'registerCandidate'])->name('register.candidate.submit');
 
 // Logout Route
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 // Home Route After Login
-Route::get('/home', [HomeController::class, 'index'])->name('home')->middleware('auth');  // Added middleware to protect this route
+Route::get('/home', [HomeController::class, 'index'])->name('home');
+
+// Routes protégées pour les recruteurs
+Route::middleware('auth')->group(function () {
+    Route::get('/jobs/create', [JobController::class, 'create'])->name('jobs.create');
+    Route::post('/jobs', [JobController::class, 'store'])->name('jobs.store');
+});

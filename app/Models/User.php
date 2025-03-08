@@ -9,7 +9,10 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
+    public function jobs()
+{
+    return $this->hasMany(Job::class);
+}
     use HasFactory, Notifiable;
 
     /**
@@ -20,10 +23,17 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'phone',
         'password',
         'role',
+        'address', // Ajoutez cette ligne
+        'postal_code', // Ajoutez cette ligne
+        'city', // Ajoutez cette ligne
+        'country', // Ajoutez cette ligne
+        'employee_count', // Ajoutez cette ligne
+        'website', // Ajoutez cette ligne
+        'logo', // Ajoutez cette ligne
     ];
-
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -46,4 +56,7 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    // app/Models/User.php
+
 }

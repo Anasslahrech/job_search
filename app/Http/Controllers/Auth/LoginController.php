@@ -1,13 +1,10 @@
 <?php
 
-
-
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\User;
 
 class LoginController extends Controller
 {
@@ -26,8 +23,15 @@ class LoginController extends Controller
         ]);
 
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
-            // Connexion réussie, redirection vers la page d'accueil
-            return redirect()->route('home');
+            // Connexion réussie
+            $user = Auth::user();
+
+            // Redirection en fonction du rôle
+            if ($user->role === 'recruiter') {
+                return redirect()->route('jobs.create'); // Rediriger vers la page de création d'offre
+            } else {
+                return redirect()->route('home'); // Rediriger vers la page d'accueil pour les autres rôles
+            }
         }
 
         // En cas d'échec, renvoyer à la page de connexion avec une erreur
